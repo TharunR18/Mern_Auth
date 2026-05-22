@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import userModel from "../model/user_model.js";
 import dotenv from "dotenv/config"
+import transporter from "../config/nodemailer.js";
+import { getWelcomeEmailHTML } from "../utils/emailTemplates.js";
 
 export const register = async (req, res) => {
 
@@ -50,7 +52,21 @@ export const register = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        return res.status(201).json({ success: true, message: "User registered successfully" })
+        try {
+            // Register Email Logic
+            const MailOptions = {
+                from: process.env.SENDER_EMAIL,
+                to: email,
+                subject: "Welcome to Website",
+                html: getWelcomeEmailHTML(name, email),
+            };
+            await transporter.sendMail(MailOptions)
+
+            return res.status(201).json({ success: true, message: "User registered successfully" })
+
+        } catch (error) {
+            res.status(500).json({ success: false, message: "error occur during sending mail" })
+        }
 
     } catch (error) {
         console.error("Register error:", error);
