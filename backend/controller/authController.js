@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 import userModel from "../model/user_model.js";
 import dotenv from "dotenv/config"
 import transporter from "../config/nodemailer.js";
-import { getWelcomeEmailHTML } from "../utils/emailTemplates.js";
+import { getWelcomeEmailHTML, getOtpEmailHTML } from "../utils/emailTemplates.js";
 
 export const register = async (req, res) => {
 
@@ -65,12 +65,12 @@ export const register = async (req, res) => {
             return res.status(201).json({ success: true, message: "User registered successfully" })
 
         } catch (error) {
-            res.status(500).json({ success: false, message: "error occur during sending mail" })
+            // Account created but email failed
+            return res.status(201).json({ success: true, message: "Account created. Verification email pending." })
         }
 
     } catch (error) {
-        console.error("Register error:", error);
-        res.status(500).json({ success: false, message: "Server error during registration" })
+        return res.status(500).json({ success: false, message: "Server error during registration" })
     }
 }
 
@@ -116,8 +116,8 @@ export const login = async (req, res) => {
         return res.status(200).json({ success: true, message: "Login successful" })
 
     } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({ success: false, message: "Server error during login" })
+
+        return res.status(500).json({ success: false, message: "Server error during login" })
     }
 }
 
@@ -133,8 +133,86 @@ export const logout = async (req, res) => {
         return res.status(200).json({ success: true, message: "Logout successful" })
 
     } catch (error) {
-        console.error("Logout error:", error);
-        res.status(500).json({ success: false, message: "Server error during logout" })
+
+        return res.status(500).json({ success: false, message: "Server error during logout" })
     }
 }
 
+export const sendVerifyOtp = async (req, res) => {
+
+    try {
+
+        const { userId } = req.body
+
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "User ID is required" })
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" })
+        }
+
+        if (user.isAccountVerified) {
+            return res.status(400).json({ success: false, message: "User already verified" })
+        }
+
+        //generate OTP
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        user.verifyOtp = otp
+        user.verifyOtpExpiresAt = Date.now() + 24 * 60 * 60 * 1000
+        await user.save();
+
+        const MailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Account Verification OTP",
+            html: getOtpEmailHTML(user.name, otp),
+        };
+
+        await transporter.sendMail(MailOptions)
+
+        return res.status(200).json({ success: true, message: "OTP sent to email successfully" })
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error while sending OTP" })
+    }
+
+}
+
+export const verifyEmail = async (req, res) => {
+
+    const { userId, otp } = req.body
+
+    if (!userId || !otp) {
+        return res.json({ success: false, message: "please fill required details" })
+    }
+
+    try {
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" })
+        }
+        if (user.otp === "" || user.verifyOtp !== otp) {
+            return res.status(404).json({ success: false, message: "invalid otp" })
+        }
+        if (user.verifyOtpExpiresAt < Date.now()) {
+            return res.status(404).json({ success: false, message: "OTP Expired" })
+        }
+
+        user.isAccountVerified = true
+        user.verifyOtp = ""
+        user.verifyOtpExpiresAt = 0
+        await user.save()
+
+        res.json({ success: true, message: "email verify Successfully" })
+
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error during send verifyEmail" })
+    }
+
+}
