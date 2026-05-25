@@ -4,6 +4,7 @@ import dotenv from "dotenv/config"
 import cookieParser from "cookie-parser";
 import db from "./config/db.js";
 import { Router } from "./routes/authRoutes.js";
+import { userRouter } from "./routes/userRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/auth", Router)
+app.use("/api/user", userRouter)
 
 // 404 handler
 app.use((req, res) => {

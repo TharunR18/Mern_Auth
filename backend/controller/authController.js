@@ -216,3 +216,95 @@ export const verifyEmail = async (req, res) => {
     }
 
 }
+
+export const isAuthenticated = async (req, res) => {
+    try {
+        res.json({ success: true })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error during checking authenticated or not" })
+    }
+
+}
+
+
+
+export const sendResetOtp = async (req, res) => {
+    try {
+        const { email } = req.body
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email is required" })
+        }
+
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, message: "Invalid email format" })
+        }
+
+        const user = await userModel.findOne({ email })
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" })
+        }
+
+        // Generate OTP
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        user.resetOtp = otp
+        user.resetOtpExpiresAt = Date.now() + 24 * 60 * 60 * 1000
+        await user.save()
+
+        const MailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: "Password Reset OTP",
+            html: getOtpEmailHTML(user.name, otp),
+        }
+
+        await transporter.sendMail(MailOptions)
+
+        return res.status(200).json({ success: true, message: "Reset OTP sent to email successfully" })
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error while sending reset OTP" })
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ success: false, message: "Email, OTP, and new password are required" })
+        }
+
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({ success: false, message: "Password must be at least 8 characters with 1 uppercase letter, 1 number, and 1 special character" })
+        }
+
+        const user = await userModel.findOne({ email })
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" })
+        }
+
+        if (user.resetOtp === "" || user.resetOtp !== otp) {
+            return res.status(400).json({ success: false, message: "Invalid OTP" })
+        }
+
+        if (user.resetOtpExpiresAt < Date.now()) {
+            return res.status(400).json({ success: false, message: "OTP Expired" })
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        user.password = hashedPassword
+        user.resetOtp = ""
+        user.resetOtpExpiresAt = 0
+        await user.save()
+
+        return res.status(200).json({ success: true, message: "Password reset successfully" })
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error during password reset" })
+    }
+}
