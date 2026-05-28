@@ -15,7 +15,6 @@ export const getUserDetails = async (req, res) => {
             success: true,
             user: {
                 name: user.name,
-                isAccountVerified: user.isAccountVerified,
             }
         });
 

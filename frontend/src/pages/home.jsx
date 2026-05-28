@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <Layout>
-      <main className="relative flex min-h-[calc(100vh-96px)] items-center justify-center px-6 text-center overflow-hidden">
+      <main className="relative flex min-h-screen items-center justify-center px-6 text-center overflow-hidden">
         <div className="absolute inset-0">
           <ShapeGrid
             speed={0.32}

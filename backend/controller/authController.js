@@ -31,7 +31,7 @@ export const register = async (req, res) => {
         const existingUser = await userModel.findOne({ email })
 
         if (existingUser) {
-            return res.status(409).json({ success: false, message: "User already exists with this email" })
+            return res.status(409).json({ success: false, message: "User already exists Please Try to login" })
         }
 
         // Validate JWT_SECRET exists
@@ -138,85 +138,6 @@ export const logout = async (req, res) => {
     }
 }
 
-export const sendVerifyOtp = async (req, res) => {
-
-    try {
-
-        const { userId } = req.body
-
-        if (!userId) {
-            return res.status(400).json({ success: false, message: "User ID is required" })
-        }
-
-        const user = await userModel.findById(userId);
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" })
-        }
-
-        if (user.isAccountVerified) {
-            return res.status(400).json({ success: false, message: "User already verified" })
-        }
-
-        //generate OTP
-        const otp = String(Math.floor(100000 + Math.random() * 900000))
-        user.verifyOtp = otp
-        user.verifyOtpExpiresAt = Date.now() + 24 * 60 * 60 * 1000
-        await user.save();
-
-        const MailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: user.email,
-            subject: "Account Verification OTP",
-            html: getOtpEmailHTML(user.name, otp),
-        };
-
-        await transporter.sendMail(MailOptions)
-
-        return res.status(200).json({ success: true, message: "OTP sent to email successfully" })
-
-    } catch (error) {
-        return res.status(500).json({ success: false, message: "Server error while sending OTP" })
-    }
-
-}
-
-export const verifyEmail = async (req, res) => {
-
-    const { userId, otp } = req.body
-
-    if (!userId || !otp) {
-        return res.json({ success: false, message: "please fill required details" })
-    }
-
-    try {
-
-        const user = await userModel.findById(userId);
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" })
-        }
-        if (user.otp === "" || user.verifyOtp !== otp) {
-            return res.status(404).json({ success: false, message: "invalid otp" })
-        }
-        if (user.verifyOtpExpiresAt < Date.now()) {
-            return res.status(404).json({ success: false, message: "OTP Expired" })
-        }
-
-        user.isAccountVerified = true
-        user.verifyOtp = ""
-        user.verifyOtpExpiresAt = 0
-        await user.save()
-
-        res.json({ success: true, message: "email verify Successfully" })
-
-
-    } catch (error) {
-        return res.status(500).json({ success: false, message: "Server error during send verifyEmail" })
-    }
-
-}
-
 export const isAuthenticated = async (req, res) => {
     try {
         res.json({ success: true })
@@ -225,8 +146,6 @@ export const isAuthenticated = async (req, res) => {
     }
 
 }
-
-
 
 export const sendResetOtp = async (req, res) => {
     try {

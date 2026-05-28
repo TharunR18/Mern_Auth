@@ -2,9 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import EmailVerify from "./pages/EmailVerify";
 import ResetPassword from "./pages/ResetPassword";
 import Register from "./pages/Register";
+import { ToastContainer } from 'react-toastify';
 
 const NotFound = () => {
   return (
@@ -16,25 +16,27 @@ const NotFound = () => {
 
 const App = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <>
-            <Navbar />
-            <Home />
-          </>
-        }
-      />
+    <>
+      <ToastContainer />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Navbar />
+              <Home />
+            </>
+          }
+        />
 
-      <Route path="/login" element={<><Navbar /><Login /></>} />
-      <Route path="/email-verify" element={<><Navbar /><EmailVerify /></>} />
-      <Route path="/reset-password" element={<><Navbar /><ResetPassword /></>} />
-      <Route path="/register" element={<><Navbar /><Register /></>} />
+        <Route path="/login" element={<><Navbar /><Login /></>} />
+        <Route path="/reset-password" element={<><Navbar /><ResetPassword /></>} />
+        <Route path="/register" element={<><Navbar /><Register /></>} />
 
-      {/* Wrong endpoint */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Wrong endpoint */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 
