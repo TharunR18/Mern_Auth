@@ -1,13 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import ResetPassword from "./pages/ResetPassword";
-import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthRedirect from "./components/AuthRedirect";
-import { AppContent } from "./context/AppContext";
+import Home from "./pages/Home.jsx";
+import Login from "./pages/Login.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
+import Register from "./pages/Register.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AuthRedirect from "./components/AuthRedirect.jsx";
+import { AppContent } from "./context/AppContext.jsx";
 import { ToastContainer } from "react-toastify";
 
 const NotFound = () => {

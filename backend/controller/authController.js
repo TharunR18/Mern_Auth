@@ -7,7 +7,7 @@ import { getWelcomeEmailHTML, getOtpEmailHTML } from "../utils/emailTemplates.js
 
 export const register = async (req, res) => {
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     const { name, email, password } = req.body;
 
@@ -47,8 +47,8 @@ export const register = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? 'none' : 'strict',
+            secure: true,
+            sameSite: 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -76,7 +76,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     const { email, password } = req.body;
 
@@ -108,8 +108,8 @@ export const login = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: true,
+            sameSite: 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -126,8 +126,8 @@ export const logout = async (req, res) => {
     try {
         res.clearCookie('token', {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            secure: true,
+            sameSite: 'strict'
         })
 
         return res.status(200).json({ success: true, message: "Logout successful" })
@@ -155,7 +155,7 @@ export const sendResetOtp = async (req, res) => {
             return res.status(400).json({ success: false, message: "Email is required" })
         }
 
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
         if (!emailRegex.test(email)) {
             return res.status(400).json({ success: false, message: "Invalid email format" })
         }
