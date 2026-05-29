@@ -30,21 +30,21 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full bg-transparent">
-      <div className="px-8 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <nav className="fixed top-0 left-0 z-20 w-full bg-transparent">
+      <div className="px-3 sm:px-6 md:px-8 py-3 sm:py-5 flex items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-2">
           <img
             src="/logo-white.png"
             alt="Logo"
-            className="h-12 w-12 cursor-pointer"
+            className="h-8 sm:h-10 md:h-12 w-8 sm:w-10 md:w-12 cursor-pointer"
             onClick={handleNavigateHome}
           />
-          <h1 className="text-2xl font-bold text-white">AUTH-R18</h1>
+          <h1 className="text-lg sm:text-xl md:text-1xl font-bold text-white">AUTH-R18</h1>
         </div>
         {isLoggedin && (
           <button
             onClick={handleLogout}
-            className="px-6 py-2 rounded-full border border-yellow-400 text-yellow-400 font-semibold hover:bg-yellow-400 hover:text-black transition-all duration-300"
+            className="px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2 text-xs sm:text-sm md:text-base rounded-full border border-yellow-400 text-yellow-400 font-semibold hover:bg-yellow-400 hover:text-black transition-all duration-300"
           >
             Logout
           </button>

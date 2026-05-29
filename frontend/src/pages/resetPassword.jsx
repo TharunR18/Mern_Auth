@@ -108,11 +108,11 @@ const ResetPassword = () => {
 
   return (
     <Layout>
-      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-4 bg-linear-to-br from-black to-[#1a1a1a]">
+      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-3 sm:px-4 md:px-6 bg-linear-to-br from-black to-[#1a1a1a]">
         <BorderGlow>
           {step === 1 && (
             <AuthCard title="Reset Password" subtitle="Enter your email">
-              <form onSubmit={handleSendOtp} className="space-y-4">
+              <form onSubmit={handleSendOtp} className="space-y-3 sm:space-y-4">
                 <GlassInput
                   type="email"
                   placeholder="Enter your email"
@@ -128,7 +128,7 @@ const ResetPassword = () => {
 
           {step === 2 && (
             <AuthCard title="Verify OTP" subtitle="Check your email for OTP">
-              <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <form onSubmit={handleVerifyOtp} className="space-y-3 sm:space-y-4">
                 <GlassInput
                   type="text"
                   placeholder="Enter 6-digit OTP"
@@ -143,7 +143,7 @@ const ResetPassword = () => {
 
           {step === 3 && (
             <AuthCard title="Create New Password" subtitle="Enter your new password">
-              <form onSubmit={handleResetPassword} className="space-y-4">
+              <form onSubmit={handleResetPassword} className="space-y-3 sm:space-y-4">
                 <GlassInput
                   type="password"
                   placeholder="New password"
@@ -156,7 +156,7 @@ const ResetPassword = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   value={confirmPassword}
                 />
-                <p className="text-xs text-white/50">
+                <p className="text-xs sm:text-sm text-white/50">
                   Password must be at least 8 characters with 1 uppercase, 1 number, and 1 special character
                 </p>
                 <GlassButton type="submit" disabled={loading}>

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 
 const Register = () => {
-  const { backendUrl, isLoggedin, setIsLoggedin } = useContext(AppContent)
+  const { backendUrl, isLoggedin, setIsLoggedin, setUserData } = useContext(AppContent)
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,6 +36,18 @@ const Register = () => {
 
       if (data.success) {
         setIsLoggedin(true)
+
+        // Fetch user details
+        try {
+          axios.defaults.withCredentials = true;
+          const { data: userData } = await axios.get(backendUrl + "api/user/get-user-details");
+          if (userData.success) {
+            setUserData(userData.user);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user details");
+        }
+
         navigate("/")
         toast.success("Account created successfully")
       }
@@ -50,10 +62,10 @@ const Register = () => {
 
   return (
     <Layout>
-      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-4 bg-linear-to-br from-black">
+      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-3 sm:px-4 md:px-6 bg-linear-to-br from-black">
         <BorderGlow>
           <AuthCard title="Create Account" subtitle="Register your account">
-            <form onSubmit={onSubmitHandler} className="space-y-4 ">
+            <form onSubmit={onSubmitHandler} className="space-y-3 sm:space-y-4 ">
               <GlassInput
                 type="text"
                 placeholder="Full Name"
@@ -76,7 +88,7 @@ const Register = () => {
               <GlassButton type="submit">Sign Up</GlassButton>
             </form>
 
-            <p className="text-center text-sm text-white/60">
+            <p className="text-center text-xs sm:text-sm text-white/60">
               Already have an account?{" "}
               <span onClick={handleNavigatelogin} className="text-yellow-400 cursor-pointer">
                 Login here

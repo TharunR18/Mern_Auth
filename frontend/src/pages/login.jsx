@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 
 const Login = () => {
 
-  const { backendUrl, isLoggedin, setIsLoggedin } = useContext(AppContent)
+  const { backendUrl, isLoggedin, setIsLoggedin, setUserData } = useContext(AppContent)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -39,6 +39,18 @@ const Login = () => {
 
       if (data.success) {
         setIsLoggedin(true)
+
+        // Fetch user details
+        try {
+          axios.defaults.withCredentials = true;
+          const { data: userData } = await axios.get(backendUrl + "api/user/get-user-details");
+          if (userData.success) {
+            setUserData(userData.user);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user details");
+        }
+
         navigate("/")
         toast.success("Login successful")
       }
@@ -51,11 +63,10 @@ const Login = () => {
   }
   return (
     <Layout>
-
-      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-4 bg-linear-to-br from-black ">
+      <main className="flex min-h-[calc(100vh-96px)] items-center justify-center px-3 sm:px-4 md:px-6 bg-linear-to-br from-black">
         <BorderGlow>
           <AuthCard title="Login" subtitle="Welcome back">
-            <form onSubmit={onSubmitHandler} className="space-y-4">
+            <form onSubmit={onSubmitHandler} className="space-y-3 sm:space-y-4">
               <GlassInput
                 type="email"
                 placeholder="Email id"
@@ -68,11 +79,11 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
               />
-              <p onClick={handleNavigateresetpassword} className="text-sm text-yellow-400 cursor-pointer">
+              <p onClick={handleNavigateresetpassword} className="text-xs sm:text-sm text-yellow-400 cursor-pointer">
                 Forgot password?
               </p>
               <GlassButton type="submit">Login</GlassButton>
-              <p className="text-center text-sm text-white/60">
+              <p className="text-center text-xs sm:text-sm text-white/60">
                 Don't have an account?{" "}
                 <span onClick={handleNavigateregister} className=" cursor-pointer text-yellow-400">
                   Sign up

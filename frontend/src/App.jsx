@@ -1,10 +1,14 @@
 import { Routes, Route } from "react-router-dom";
+import { useContext } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import Register from "./pages/Register";
-import { ToastContainer } from 'react-toastify';
+import ProtectedRoute from "./components/ProtectedRoute";
+import AuthRedirect from "./components/AuthRedirect";
+import { AppContent } from "./context/AppContext";
+import { ToastContainer } from "react-toastify";
 
 const NotFound = () => {
   return (
@@ -14,11 +18,26 @@ const NotFound = () => {
   );
 };
 
+const LoadingScreen = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-white bg-black">
+      <h1 className="text-2xl font-bold">Loading...</h1>
+    </div>
+  );
+};
+
 const App = () => {
+  const { loading } = useContext(AppContent);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <>
       <ToastContainer />
       <Routes>
+        {/* Public Home Route */}
         <Route
           path="/"
           element={
@@ -29,9 +48,57 @@ const App = () => {
           }
         />
 
-        <Route path="/login" element={<><Navbar /><Login /></>} />
-        <Route path="/reset-password" element={<><Navbar /><ResetPassword /></>} />
-        <Route path="/register" element={<><Navbar /><Register /></>} />
+        {/* Login - Redirect if already logged in */}
+        <Route
+          path="/login"
+          element={
+            <AuthRedirect>
+              <>
+                <Navbar />
+                <Login />
+              </>
+            </AuthRedirect>
+          }
+        />
+
+        {/* Register - Redirect if already logged in */}
+        <Route
+          path="/register"
+          element={
+            <AuthRedirect>
+              <>
+                <Navbar />
+                <Register />
+              </>
+            </AuthRedirect>
+          }
+        />
+
+        {/* Reset Password - Can stay public (user forgot password) */}
+        <Route
+          path="/reset-password"
+          element={
+            <>
+              <Navbar />
+              <ResetPassword />
+            </>
+          }
+        />
+
+        {/* Protected Route Example (create a Dashboard page later) */}
+        {/* 
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <>
+                <Navbar />
+                <Dashboard />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        */}
 
         {/* Wrong endpoint */}
         <Route path="*" element={<NotFound />} />
