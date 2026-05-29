@@ -184,8 +184,13 @@ export const sendResetOtp = async (req, res) => {
         return res.status(200).json({ success: true, message: "Reset OTP sent to email successfully" })
 
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Server error while sending reset OTP" })
-    }
+    console.error("OTP Email Error:", error);
+
+    return res.status(500).json({
+        success: false,
+        message: "Server error while sending reset OTP"
+    });
+}
 }
 
 export const resetPassword = async (req, res) => {
