@@ -24,7 +24,7 @@ export const getWelcomeEmailHTML = (name, email) => {
               <tr>
                 <td style="padding:40px;">
                   <h2 style="margin:0 0 16px;color:#fbbf24;font-size:24px;line-height:1.3;">Hi ${name || "Friend"},</h2>
-                  <p style="margin:0 0 18px;color:#d0d0d0;font-size:16px;line-height:1.8;">Thanks for joining AUTH-R18. We're excited to have you here.</p>
+                  <p style="margin:0 0 18px;color:#d0d0d0;font-size:16px;line-height:1.8;">Thanks for Exploring AUTH-R18 project. Have a Good Day :) </p>
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#2d2d2d;border:1px solid #fbbf24;border-radius:14px;">
                     <tr>
                       <td style="padding:18px 20px;">

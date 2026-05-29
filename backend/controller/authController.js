@@ -55,9 +55,9 @@ export const register = async (req, res) => {
         try {
             // Register Email Logic
             const MailOptions = {
-                from: process.env.SENDER_EMAIL,
+                from: `AUTH-R18 <${process.env.SENDER_EMAIL}>`,
                 to: email,
-                subject: "Welcome to Website",
+                subject: "Welcome to AUTH-R18",
                 html: getWelcomeEmailHTML(name, email),
             };
             await transporter.sendMail(MailOptions)
@@ -173,9 +173,9 @@ export const sendResetOtp = async (req, res) => {
         await user.save()
 
         const MailOptions = {
-            from: process.env.SENDER_EMAIL,
+            from: `AUTH-R18 <${process.env.SENDER_EMAIL}>`,
             to: user.email,
-            subject: "Password Reset OTP",
+            subject: "Password Reset OTP - AUTH-R18",
             html: getOtpEmailHTML(user.name, otp),
         }
 
