@@ -23,7 +23,7 @@ db();
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({origin:"VITE_API_URL=https://auth-r18-backend.onrender.com",credentials: true }))
+app.use(cors({origin: process.env.FRONTEND_URL || "http://localhost:5173", credentials: true }))
 
 app.get("/", (req, res) => {
     res.send("Server is running");
