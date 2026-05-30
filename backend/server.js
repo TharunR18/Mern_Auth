@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import db from "./config/db.js";
 import { Router } from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import transporter from "./config/nodemailer.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
