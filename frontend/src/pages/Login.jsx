@@ -43,7 +43,7 @@ const Login = () => {
         // Fetch user details
         try {
           axios.defaults.withCredentials = true;
-          const { data: userData } = await axios.get(backendUrl + "api/user/get-user-details");
+          const { data: userData } = await axios.post(backendUrl + "api/user/get-user-details", {});
           if (userData.success) {
             setUserData(userData.user);
           }

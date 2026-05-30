@@ -62,7 +62,7 @@ export const register = async (req, res) => {
             };
             await transporter.sendMail(MailOptions)
 
-            return res.status(201).json({ success: true, message: "User registered successfully" })
+            return res.status(201).json({ success: true, message: "User registered successfully,Email Sended" })
 
         } catch (error) {
             // Account created but email failed
@@ -140,7 +140,20 @@ export const logout = async (req, res) => {
 
 export const isAuthenticated = async (req, res) => {
     try {
-        res.json({ success: true })
+        const { userId } = req.body;
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
+
+        res.json({
+            success: true,
+            user: {
+                name: user.name,
+                email: user.email,
+            }
+        })
     } catch (error) {
         return res.status(500).json({ success: false, message: "Server error during checking authenticated or not" })
     }
@@ -184,13 +197,13 @@ export const sendResetOtp = async (req, res) => {
         return res.status(200).json({ success: true, message: "Reset OTP sent to email successfully" })
 
     } catch (error) {
-    console.error("OTP Email Error:", error);
+        console.error("OTP Email Error:", error);
 
-    return res.status(500).json({
-        success: false,
-        message: "Server error while sending reset OTP"
-    });
-}
+        return res.status(500).json({
+            success: false,
+            message: "Server error while sending reset OTP"
+        });
+    }
 }
 
 export const resetPassword = async (req, res) => {

@@ -40,7 +40,7 @@ const Register = () => {
         // Fetch user details
         try {
           axios.defaults.withCredentials = true;
-          const { data: userData } = await axios.get(backendUrl + "api/user/get-user-details");
+          const { data: userData } = await axios.post(backendUrl + "api/user/get-user-details", {});
           if (userData.success) {
             setUserData(userData.user);
           }
@@ -49,7 +49,11 @@ const Register = () => {
         }
 
         navigate("/")
-        toast.success("Account created successfully")
+        toast.success(
+          <div>
+            Account created successfully <br /> Email Sent if not Please check in spam 
+          </div>
+        );
       }
       else {
         toast.error(data.message)

@@ -2,8 +2,11 @@ import userModel from "../model/user_model.js";
 
 export const getUserDetails = async (req, res) => {
     try {
- 
-        const {userId} = req.body
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "User ID is required" });
+        }
 
         const user = await userModel.findById(userId);
 
@@ -15,6 +18,7 @@ export const getUserDetails = async (req, res) => {
             success: true,
             user: {
                 name: user.name,
+                email: user.email,
             }
         });
 
