@@ -35,11 +35,20 @@ app.get("/", (req, res) => {
 
 app.get("/mail-test", async (req, res) => {
   try {
-    await transporter.verify();
-    res.send("SMTP OK");
+    const result = await transporter.verify();
+    res.json({
+      success: true,
+      result
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json(err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      code: err.code,
+      stack: err.stack
+    });
   }
 });
 
