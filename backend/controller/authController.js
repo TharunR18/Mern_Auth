@@ -5,6 +5,14 @@ import dotenv from "dotenv/config"
 import transporter from "../config/nodemailer.js";
 import { getWelcomeEmailHTML, getOtpEmailHTML } from "../utils/emailTemplates.js";
 
+const isProd = process.env.NODE_ENV === "production";
+const authCookieOptions = {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+};
+
 export const register = async (req, res) => {
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -45,12 +53,7 @@ export const register = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie("token", token, authCookieOptions)
 
         try {
             // Register Email Logic
@@ -106,12 +109,7 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie("token", token, authCookieOptions)
 
         return res.status(200).json({ success: true, message: "Login successful" })
 
@@ -124,10 +122,10 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
 
     try {
-        res.clearCookie('token', {
+        res.clearCookie("token", {
             httpOnly: true,
-            secure: true,
-            sameSite: 'strict'
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax"
         })
 
         return res.status(200).json({ success: true, message: "Logout successful" })
