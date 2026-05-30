@@ -35,7 +35,7 @@ const Login = () => {
       }
 
       axios.defaults.withCredentials = true
-      const { data } = await axios.post(backendUrl + "api/auth/login", { email, password })
+      const { data } = await axios.post(backendUrl + "/api/auth/login", { email, password })
 
       if (data.success) {
         setIsLoggedin(true)
@@ -43,7 +43,7 @@ const Login = () => {
         // Fetch user details
         try {
           axios.defaults.withCredentials = true;
-          const { data: userData } = await axios.post(backendUrl + "api/user/get-user-details", {});
+          const { data: userData } = await axios.post(backendUrl + "/api/user/get-user-details", {});
           if (userData.success) {
             setUserData(userData.user);
           }

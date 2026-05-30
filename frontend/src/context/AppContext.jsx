@@ -18,7 +18,7 @@ export const AppContextProvider = (props) => {
 
         axios.defaults.withCredentials = true;
         const { data } = await axios.post(
-          `${backendUrl}api/auth/is-auth`,
+          `${backendUrl}/api/auth/is-auth`,
           {},
           { signal: controller.signal }
         );
