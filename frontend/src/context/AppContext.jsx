@@ -4,7 +4,7 @@ import axios from "axios";
 export const AppContent = createContext();
 
 export const AppContextProvider = (props) => {
-  const backendUrl = 'http://localhost:3000/';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
