@@ -33,6 +33,16 @@ app.get("/", (req, res) => {
     res.send("Server is running");
 })
 
+app.get("/mail-test", async (req, res) => {
+  try {
+    await transporter.verify();
+    res.send("SMTP OK");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 app.use("/api/auth", Router)
 app.use("/api/user", userRouter)
 
