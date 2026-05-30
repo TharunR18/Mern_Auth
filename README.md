@@ -4,7 +4,7 @@ A full-stack authentication system built with the MERN stack featuring secure us
 
 ## Screenshot
 
-![AUTH-R18 Home Page](screenshot.png)
+![AUTH-R18 Home Page](Screenshot.png)
 
 ## Live Demo
 
